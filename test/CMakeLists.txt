@@ -5,14 +5,24 @@ else()
   include(${CONAN_CATCH2_ROOT}/lib/cmake/Catch2/Catch.cmake)
 endif()
 
+add_library(src STATIC ../src/Recorder.cpp)
+target_link_libraries(
+    src PUBLIC
+    CONAN_PKG::fmt
+)
 
 add_library(catch_main STATIC catch_main.cpp)
 target_link_libraries(catch_main PUBLIC CONAN_PKG::catch2)
 target_link_libraries(catch_main PRIVATE project_options)
 
 add_executable(tests tests.cpp)
-target_link_libraries(tests PRIVATE project_warnings project_options
-                                    catch_main)
+target_link_libraries(
+    tests PRIVATE
+    project_warnings
+    project_options
+    catch_main
+    src
+)
 
 
 # automatically discover tests that are defined in catch based test files you
@@ -30,7 +40,7 @@ catch_discover_tests(
 # Add a file containing a set of constexpr tests
 add_executable(constexpr_tests constexpr_tests.cpp)
 target_link_libraries(constexpr_tests PRIVATE project_options project_warnings
-                                              catch_main)
+                                              catch_main src)
 
 catch_discover_tests(
   constexpr_tests
@@ -47,7 +57,7 @@ catch_discover_tests(
 add_executable(relaxed_constexpr_tests constexpr_tests.cpp)
 target_link_libraries(
   relaxed_constexpr_tests PRIVATE project_options project_warnings
-                                  catch_main)
+                                  catch_main src)
 target_compile_definitions(
   relaxed_constexpr_tests PRIVATE
                                   -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)

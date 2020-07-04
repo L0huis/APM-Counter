@@ -1,14 +1,25 @@
 #include <catch2/catch.hpp>
 
-unsigned int Factorial(unsigned int number)
-{
-	return number <= 1 ? number : Factorial(number - 1) * number;
-}
+#include "../src/Recorder.hpp"
 
-TEST_CASE("Factorials are computed", "[factorial]")
+TEST_CASE("Starting/Stopping recording is indempotent", "[factorial]")
 {
-	REQUIRE(Factorial(1) == 1);
-	REQUIRE(Factorial(2) == 2);
-	REQUIRE(Factorial(3) == 6);
-	REQUIRE(Factorial(10) == 3628800);
+	Recorder r;
+
+	r.start_recording();
+	REQUIRE(r.is_recording() == true);
+	for (int i = 0; i < 10; i++)
+	{
+		r.start_recording();
+		REQUIRE(r.is_recording() == true);
+	}
+
+	r.stop_recording();
+	REQUIRE(r.is_recording() == false);
+
+	for (int i = 0; i < 10; i++)
+	{
+		r.stop_recording();
+		REQUIRE(r.is_recording() == false);
+	}
 }

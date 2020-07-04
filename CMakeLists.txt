@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Set the project name to your project name, my project isn't very descriptive
-project(ProjectName CXX)
+project(APM-Counter CXX)
 include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
@@ -53,7 +53,7 @@ endif()
 # before loading Conan
 
 set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES}
-	
+	wxwidgets/3.1.2@bincrafters/stable
 )
 
 # set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS} sfml:shared=False
@@ -72,21 +72,5 @@ if(ENABLE_TESTING)
   add_subdirectory(test)
 endif()
 
-if(ENABLE_FUZZING)
-  message(
-    "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html"
-  )
-  add_subdirectory(fuzz_test)
-endif()
-
-
 add_subdirectory(src)
-
-
-option(ENABLE_UNITY "Enable Unity builds of projects" OFF)
-if (ENABLE_UNITY)
-  # Add for any project you want to apply unity builds for
-  set_target_properties(intro PROPERTIES UNITY_BUILD ON)
-endif()
-
 
